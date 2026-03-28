@@ -1,0 +1,39 @@
+@extends('layouts.main')
+
+@section('title', env('APP_NAME', 'Luany') . ' — ' . __('seo.description'))
+
+@push('head')
+    <meta name="description" content="Luany — AST-compiled PHP MVC for PHP 8.2+. Zero-regex template engine. Deterministic pipeline. Explicit lifecycle.">
+    <meta property="og:title" content="Luany Framework">
+    <meta property="og:type"  content="website">
+@endpush
+
+@section('content')
+
+    <div class="page-grid" aria-hidden="true"></div>
+
+    @include('pages.home.hero')
+    @include('pages.home.playground')
+    @include('pages.home.pipeline')
+    @include('pages.home.features')
+    @include('pages.home.nextsteps')
+
+@endsection
+
+@style
+.page-grid {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image:
+        linear-gradient(rgba(91,49,113,.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(91,49,113,.035) 1px, transparent 1px);
+    background-size: 48px 48px;
+}
+[data-theme="light"] .page-grid {
+    background-image:
+        linear-gradient(rgba(91,49,113,.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(91,49,113,.06) 1px, transparent 1px);
+}
+@endstyle
