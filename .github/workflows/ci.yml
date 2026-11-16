@@ -1,13 +1,13 @@
-name: Skeleton CI
+name: CI
 
 on:
   push:
-    branches: [main, next/v1]
+    branches: [main]
   pull_request:
     branches: [main]
 
 jobs:
-  validate:
+  test:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,7 +16,7 @@ jobs:
       - uses: shivammathur/setup-php@v2
         with:
           php-version: "8.2"
-          extensions: pdo, pdo_sqlite, mbstring
+          extensions: mbstring
 
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist
@@ -24,5 +24,27 @@ jobs:
       - name: Validate composer.json
         run: composer validate
 
-      - name: Test autoload
-        run: php -r "require 'vendor/autoload.php'; echo 'Autoload OK' . PHP_EOL;"
+      - name: Run tests
+        run: vendor/bin/phpunit
+
+  content:
+    # Every page in the docs manifest must render.
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/checkout@v4
+        with:
+          repository: luany-ecosystem/docs
+          path: content
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          extensions: mbstring
+
+      - run: composer install --no-interaction --prefer-dist
+
+      - name: Render every page
+        run: php bin/check-content.php

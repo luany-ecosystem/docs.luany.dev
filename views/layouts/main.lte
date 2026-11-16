@@ -1,30 +1,49 @@
 <!DOCTYPE html>
-<html lang="{{ locale() }}">
+<html lang="{{ $locale ?? 'en' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', env('APP_NAME', 'Luany'))</title>
-    <link rel="icon" type="image/svg+xml" href="{{ asset('images/icon/luany.svg') }}">
+    <title>@yield('title', 'Luany') — Luany</title>
+    <meta name="description" content="@yield('description', 'Luany — a PHP framework with an explicit request lifecycle, a compiled template engine and a productive CLI.')">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="(prefers-color-scheme: light)" id="hl-light">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="(prefers-color-scheme: dark)" id="hl-dark">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-    <script>/* anti-FOUC */(function(){var t=localStorage.getItem('luany-theme');if(t==='light')document.documentElement.setAttribute('data-theme','light');}());</script>
-    @stack('head')
+    <script>(function(){try{var t=localStorage.getItem('luany-docs-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}}());</script>
     @styles
 </head>
 <body>
+    <header class="topbar">
+        <button class="icon-btn menu-btn" type="button" aria-label="Menu" data-toggle-sidebar>&#9776;</button>
+        <a class="brand" href="/{{ $locale ?? 'en' }}"><img src="/favicon.svg" alt="" width="26" height="26"> Luany</a>
+        @isset($version)<span class="version">v{{ $version }}</span>@endisset
 
-    @include('components.navbar')
-    @include('components.flash')
+        <button class="search-btn" type="button" data-open-search>
+            <span>{{ ($locale ?? 'en') === 'pt' ? 'Pesquisar' : 'Search' }}</span><kbd>/</kbd>
+        </button>
 
-    <main class="main-content">
-        @yield('content')
-    </main>
+        <nav class="top-links">
+            @isset($locales)
+                @foreach($locales as $code => $label)
+                    <a href="{{ isset($page) ? '/' . $code . '/docs/' . $page['slug'] : '/' . $code }}" @class(['active' => $code === $locale]) hreflang="{{ $code }}">{{ strtoupper($code) }}</a>
+                @endforeach
+            @endisset
+            <a href="{{ config('docs.github') }}" target="_blank" rel="noopener">GitHub</a>
+            <button class="icon-btn" type="button" aria-label="Toggle theme" data-toggle-theme>&#9681;</button>
+        </nav>
+    </header>
 
-    @include('components.footer')
+    @yield('body')
 
-    <script src="{{ asset('js/app.js') }}"></script>
+    <div class="search-modal" hidden data-search-modal data-locale="{{ $locale ?? 'en' }}">
+        <div class="search-panel" role="dialog" aria-label="Search">
+            <input type="search" placeholder="{{ ($locale ?? 'en') === 'pt' ? 'Pesquisar na documentação…' : 'Search the docs…' }}" data-search-input autocomplete="off">
+            <ul class="search-results" data-search-results></ul>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
+    <script src="{{ asset('js/app.js') }}" defer></script>
     @scripts
-    @stack('scripts')
-
 </body>
 </html>

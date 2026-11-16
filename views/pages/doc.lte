@@ -1,0 +1,48 @@
+@extends('layouts.main')
+
+@section('title', $page['title'])
+
+@section('body')
+<div class="docs">
+    <aside class="sidebar" data-sidebar>
+        @foreach($navigation as $section)
+            <p class="nav-section">{{ $section['title'] }}</p>
+            <ul>
+                @foreach($section['pages'] as $item)
+                    <li><a href="/{{ $locale }}/docs/{{ $item['slug'] }}" @class(['active' => $item['slug'] === $page['slug']])>{{ $item['title'] }}</a></li>
+                @endforeach
+            </ul>
+        @endforeach
+    </aside>
+
+    <main class="content">
+        <p class="breadcrumb">{{ $page['section'] }}</p>
+        <h1>{{ $page['title'] }}</h1>
+        <article class="prose">
+            {!! $page['html'] !!}
+        </article>
+
+        <nav class="pager">
+            @if($page['prev'])
+                <a class="prev" href="/{{ $locale }}/docs/{{ $page['prev']['slug'] }}"><small>{{ $locale === 'pt' ? 'Anterior' : 'Previous' }}</small>{{ $page['prev']['title'] }}</a>
+            @endif
+            @if($page['next'])
+                <a class="next" href="/{{ $locale }}/docs/{{ $page['next']['slug'] }}"><small>{{ $locale === 'pt' ? 'Seguinte' : 'Next' }}</small>{{ $page['next']['title'] }}</a>
+            @endif
+        </nav>
+
+        <p class="edit"><a href="{{ $editUrl }}" target="_blank" rel="noopener">{{ $locale === 'pt' ? 'Editar esta página no GitHub' : 'Edit this page on GitHub' }}</a></p>
+    </main>
+
+    <aside class="outline">
+        @if($page['outline'] !== [])
+            <p class="nav-section">{{ $locale === 'pt' ? 'Nesta página' : 'On this page' }}</p>
+            <ul>
+                @foreach($page['outline'] as $h)
+                    <li class="level-{{ $h['level'] }}"><a href="#{{ $h['id'] }}">{{ $h['text'] }}</a></li>
+                @endforeach
+            </ul>
+        @endif
+    </aside>
+</div>
+@endsection

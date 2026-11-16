@@ -31,7 +31,6 @@ Env::required(['APP_ENV', 'APP_URL']);
 
 // 4. Service Providers — register before kernel boots
 $app->register(new App\Providers\AppServiceProvider());
-$app->register(new App\Providers\DatabaseServiceProvider());
 
 // 5. Bind the application's custom Kernel
 $app->singleton(
