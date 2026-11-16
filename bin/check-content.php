@@ -46,14 +46,14 @@ foreach ($rendered as $locale => $pages) {
         preg_match_all('#href="\#([^"]+)"#', $page['html'], $local);
 
         foreach ($links as $link) {
-            [$target, $anchor] = [$link[1], $link[2] ?? ''];
+            [$target, $anchor] = [$link[1], rawurldecode($link[2] ?? '')];
             if (!isset($pages[$target])) {
                 $errors[] = "{$locale}/{$slug}.md links to missing page {$target}.md";
             } elseif ($anchor !== '' && !in_array($anchor, array_column($pages[$target]['outline'], 'id'), true)) {
                 $errors[] = "{$locale}/{$slug}.md links to {$target}.md#{$anchor}, heading not found";
             }
         }
-        foreach ($local[1] as $anchor) {
+        foreach (array_map('rawurldecode', $local[1]) as $anchor) {
             if (!in_array($anchor, array_column($page['outline'], 'id'), true)) {
                 $errors[] = "{$locale}/{$slug}.md links to #{$anchor}, heading not found";
             }
