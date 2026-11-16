@@ -1,0 +1,38 @@
+@extends('layouts.main')
+
+@section('title', $locale === 'pt' ? 'Documentação' : 'Documentation')
+
+@section('body')
+<main class="landing">
+    <section class="hero">
+        <img src="/favicon.svg" alt="" width="64" height="64">
+        <h1>Luany</h1>
+        <p class="lead">
+            @if($locale === 'pt')
+                Um framework PHP com ciclo de vida explícito, templates compilados e validados antes de executar, um ORM completo e uma CLI que gera features inteiras.
+            @else
+                A PHP framework with an explicit request lifecycle, templates compiled and validated before they run, a complete ORM and a CLI that scaffolds whole features.
+            @endif
+        </p>
+        <pre class="install"><code class="language-bash">composer global require luany/cli
+luany new my-app
+cd my-app && luany dev</code></pre>
+        @if($first)
+            <a class="cta" href="/{{ $locale }}/docs/{{ $first['slug'] }}">{{ $locale === 'pt' ? 'Começar' : 'Get started' }} &rarr;</a>
+        @endif
+    </section>
+
+    <section class="sections">
+        @foreach($navigation as $section)
+            <div class="card">
+                <h2>{{ $section['title'] }}</h2>
+                <ul>
+                    @foreach($section['pages'] as $item)
+                        <li><a href="/{{ $locale }}/docs/{{ $item['slug'] }}">{{ $item['title'] }}</a></li>
+                    @endforeach
+                </ul>
+            </div>
+        @endforeach
+    </section>
+</main>
+@endsection

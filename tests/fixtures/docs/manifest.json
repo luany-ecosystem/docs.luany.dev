@@ -1,0 +1,13 @@
+{
+  "version": "1.x",
+  "locales": { "en": "English", "pt": "Português" },
+  "sections": [
+    {
+      "title": { "en": "Getting Started", "pt": "Primeiros Passos" },
+      "pages": [
+        { "slug": "installation", "title": { "en": "Installation", "pt": "Instalação" } },
+        { "slug": "routing", "title": { "en": "Routing", "pt": "Rotas" } }
+      ]
+    }
+  ]
+}

@@ -8,6 +8,8 @@ composer.lock
 
 # Cache & logs
 /storage/cache/views/*
+/storage/cache/docs/
+/storage/sessions/
 /storage/logs/*
 !/storage/cache/views/.gitkeep
 !/storage/logs/.gitkeep
@@ -17,6 +19,10 @@ composer.lock
 
 # Node
 /node_modules/
+
+# package
+package-lock.json
+yarn.lock
 
 # IDE
 .idea/

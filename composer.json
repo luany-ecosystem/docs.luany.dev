@@ -1,6 +1,6 @@
 {
-    "name": "luany/luany",
-    "description": "Official application skeleton for the Luany Framework — AST-compiled PHP MVC with an explicit request lifecycle and zero-regex template engine.",
+    "name": "luany/docs-site",
+    "description": "docs.luany.dev — the Luany documentation site, built with Luany.",
     "type": "project",
     "license": "MIT",
     "authors": [
@@ -12,19 +12,14 @@
         }
     ],
     "keywords": [
-        "php",
-        "framework",
-        "mvc",
-        "ast",
-        "lte",
         "luany",
-        "skeleton"
+        "documentation"
     ],
-    "homepage": "https://github.com/luany-ecosystem/luany",
+    "homepage": "https://docs.luany.dev",
     "require": {
         "php": ">=8.2",
-        "luany/framework": "^1.0",
-        "luany/database": "^1.0"
+        "league/commonmark": "^2.5",
+        "luany/framework": "^1.4"
     },
     "require-dev": {
         "phpunit/phpunit": "^11.0"
@@ -39,14 +34,12 @@
             "Tests\\": "tests/"
         }
     },
-    "scripts": {
-        "post-create-project-cmd": [
-            "@php bin/post-install.php"
-        ]
-    },
     "config": {
         "optimize-autoloader": true,
         "sort-packages": true
     },
-    "minimum-stability": "stable"
+    "minimum-stability": "stable",
+    "scripts": {
+        "test": "phpunit"
+    }
 }

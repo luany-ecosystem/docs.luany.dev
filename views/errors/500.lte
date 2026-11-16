@@ -1,0 +1,13 @@
+@extends('layouts.main')
+
+@section('title', 'Server error')
+
+@section('body')
+<main class="landing">
+<section class="error-page">
+    <h1>500</h1>
+    <p>Something went wrong on our side. Please try again later.</p>
+    <a href="{{ url('/') }}">Back to home</a>
+</section>
+</main>
+@endsection

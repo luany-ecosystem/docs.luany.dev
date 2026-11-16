@@ -1,23 +1,10 @@
 <?php
 
+use App\Controllers\DocsController;
 use Luany\Core\Routing\Route;
-use App\Controllers\HomeController;
-use App\Controllers\Locale\LocaleController;
 
-/*
-|--------------------------------------------------------------------------
-| HTTP Routes
-|--------------------------------------------------------------------------
-|
-| Routes are matched top-to-bottom. The first match wins.
-| Route parameters are available in controller methods as typed arguments.
-|
-*/
-
-// ── Home ─────────────────────────────────────────────────────────────────
-Route::get('/', [HomeController::class, 'index']);
-
-// ── Locale ───────────────────────────────────────────────────────────────
-// GET /locale/{lang}  —  sets cookie and redirects back
-// No CSRF needed: GET request, no state mutation beyond a cookie preference.
-Route::get('/locale/{lang}', [LocaleController::class, 'switch']);
+Route::get('/', [DocsController::class, 'home']);
+Route::get('/{locale}', [DocsController::class, 'landing']);
+Route::get('/{locale}/docs', [DocsController::class, 'index']);
+Route::get('/{locale}/docs/{slug}', [DocsController::class, 'show'])->name('docs.show');
+Route::get('/{locale}/search.json', [DocsController::class, 'search']);
