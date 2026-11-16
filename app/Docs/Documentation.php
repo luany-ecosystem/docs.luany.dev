@@ -125,9 +125,34 @@ final class Documentation
     /**
      * Search index for $locale: one entry per page and per h2/h3 section.
      *
+     * Cached in storage/cache/docs, keyed by the manifest and page mtimes, so
+     * a `git pull` of the docs rebuilds it on the next request.
+     *
      * @return list<array{title: string, page: string, section: string, url: string, text: string}>
      */
     public function searchIndex(string $locale): array
+    {
+        $stamp = (string) filemtime($this->path . '/manifest.json');
+        foreach ($this->pages($locale) as $page) {
+            $stamp .= '|' . (@filemtime($this->file($locale, $page['slug'])) ?: 0);
+        }
+        $cached = $this->cachePath . '/search-' . $locale . '-' . md5($stamp) . '.php';
+
+        if (is_file($cached)) {
+            /** @var list<array{title: string, page: string, section: string, url: string, text: string}> */
+            return require $cached;
+        }
+
+        $index = $this->buildSearchIndex($locale);
+        $this->store($cached, $index);
+
+        return $index;
+    }
+
+    /**
+     * @return list<array{title: string, page: string, section: string, url: string, text: string}>
+     */
+    private function buildSearchIndex(string $locale): array
     {
         $index = [];
         foreach ($this->pages($locale) as $page) {

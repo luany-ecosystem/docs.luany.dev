@@ -95,5 +95,8 @@ class DocsTest extends TestCase
         $urls  = array_column($index, 'url');
         $this->assertContains('/en/docs/installation', $urls);
         $this->assertContains('/en/docs/routing#route-parameters', $urls);
+
+        $this->assertNotEmpty(glob(dirname(__DIR__, 2) . '/storage/cache/docs/search-en-*.php'), 'index is cached');
+        $this->assertSame($response->getBody(), $this->get('/en/search.json')->getBody(), 'cached index is identical');
     }
 }
