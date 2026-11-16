@@ -17,7 +17,8 @@ require dirname(__DIR__) . '/vendor/autoload.php';
 $root = dirname(__DIR__);
 $path = $argv[1] ?? (getenv('DOCS_PATH') ?: 'content');
 if ($path[0] !== '/') {
-    $path = $root . '/' . $path;
+    // Relative to the current directory first, then to the project root.
+    $path = is_dir(getcwd() . '/' . $path) ? getcwd() . '/' . $path : $root . '/' . $path;
 }
 
 $cache = sys_get_temp_dir() . '/luany-docs-check-' . getmypid();
