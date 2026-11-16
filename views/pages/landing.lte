@@ -1,38 +1,277 @@
 @extends('layouts.main')
 
-@section('title', $locale === 'pt' ? 'Documentação' : 'Documentation')
+@php($L = $t['landing'])
+@php($start = '/' . $locale . '/docs/' . ($first['slug'] ?? 'installation'))
+@php($docs = '/' . $locale . '/docs/')
+@php($firstTab = array_key_first($samples))
+
+@section('page', 'landing')
+@section('title', $L['meta_title'])
+@section('description', $L['meta_description'])
 
 @section('body')
-<main class="landing">
+<main id="main" class="landing">
+
+    {{-- ── Hero ─────────────────────────────────────────────────────────── --}}
     <section class="hero">
-        <img src="/favicon.svg" alt="" width="64" height="64">
-        <h1>Luany</h1>
-        <p class="lead">
-            @if($locale === 'pt')
-                Um framework PHP com ciclo de vida explícito, templates compilados e validados antes de executar, um ORM completo e uma CLI que gera features inteiras.
-            @else
-                A PHP framework with an explicit request lifecycle, templates compiled and validated before they run, a complete ORM and a CLI that scaffolds whole features.
-            @endif
-        </p>
-        <pre class="install"><code class="language-bash">composer global require luany/cli
-luany new my-app
-cd my-app && luany dev</code></pre>
-        @if($first)
-            <a class="cta" href="/{{ $locale }}/docs/{{ $first['slug'] }}">{{ $locale === 'pt' ? 'Começar' : 'Get started' }} &rarr;</a>
-        @endif
+        <div class="hero-bg" aria-hidden="true">
+            <div class="hero-grid"></div>
+            <div class="glow glow-purple" data-parallax="0.25"></div>
+            <div class="glow glow-orange" data-parallax="0.15"></div>
+        </div>
+
+        <div class="container hero-inner">
+            <div class="hero-copy">
+                <p class="eyebrow" data-hero-fade><span class="pulse-dot"></span>{{ $L['eyebrow'] }}</p>
+                <h1 class="hero-title" data-split>{{ $L['title_a'] }} <span class="grad">{{ $L['title_b'] }}</span></h1>
+                <p class="hero-lead" data-hero-fade>{{ $L['lead'] }}</p>
+
+                <div class="hero-actions" data-hero-fade>
+                    <a class="btn btn-primary" href="{{ $start }}">
+                        {{ $L['cta'] }}
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                    </a>
+                    <a class="btn btn-ghost" href="{{ $github }}" target="_blank" rel="noopener">
+                        <svg viewBox="0 0 24 24" aria-hidden="true" class="filled"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>
+                        {{ $L['cta_alt'] }}
+                    </a>
+                </div>
+
+                <div class="install" data-hero-fade>
+                    <span class="install-label">{{ $L['install'] }}</span>
+                    <code><span class="prompt">$</span> composer global require luany/cli</code>
+                    <button class="copy-inline" type="button" data-copy-text="composer global require luany/cli" aria-label="{{ $t['ui']['copy'] }}">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="hero-stage" data-hero-stage>
+                <div class="stage-orbit orbit-1" aria-hidden="true"></div>
+                <div class="stage-orbit orbit-2" aria-hidden="true"></div>
+
+                <figure class="stage-logo" data-depth="0.6">
+                    <img src="{{ asset('brand/luany-hero.webp') }}" alt="Luany" width="664" height="556" fetchpriority="high">
+                </figure>
+
+                <div class="float-card card-route" data-depth="1.4">
+                    <div class="float-head"><span class="dots"><i></i><i></i><i></i></span>{{ $L['stage_route'] }}</div>
+                    <pre><code class="language-php">{{ $hero['route'] }}</code></pre>
+                </div>
+
+                <div class="float-card card-view" data-depth="1.1">
+                    <div class="float-head"><span class="dots"><i></i><i></i><i></i></span>{{ $L['stage_view'] }}</div>
+                    <pre><code class="language-lte">{{ $hero['view'] }}</code></pre>
+                </div>
+
+                <div class="float-card card-check" data-depth="1.8">
+                    <span class="check-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg></span>
+                    <span><strong>{{ $L['stage_check'] }}</strong><small>{{ $L['stage_ok'] }}</small></span>
+                </div>
+            </div>
+        </div>
     </section>
 
-    <section class="sections">
-        @foreach($navigation as $section)
-            <div class="card">
-                <h2>{{ $section['title'] }}</h2>
-                <ul>
-                    @foreach($section['pages'] as $item)
-                        <li><a href="/{{ $locale }}/docs/{{ $item['slug'] }}">{{ $item['title'] }}</a></li>
+    {{-- ── Ecosystem strip ──────────────────────────────────────────────── --}}
+    <section class="strip" aria-label="{{ $L['strip'] }}">
+        <div class="container strip-inner">
+            <p class="strip-label">{{ $L['strip'] }}</p>
+            <div class="marquee">
+                <div class="marquee-track">
+                    @foreach([1, 2] as $copy)
+                        @foreach($packages as $package)
+                            <span class="marquee-item" @if($copy === 2) aria-hidden="true" @endif>
+                                <img src="{{ asset('brand/luany-mark-64.webp') }}" alt="" width="22" height="22" loading="lazy">
+                                {{ $package['name'] }} <em>{{ $package['version'] }}</em>
+                            </span>
+                        @endforeach
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{-- ── Code tour ────────────────────────────────────────────────────── --}}
+    <section class="section code-tour">
+        <div class="container code-grid">
+            <div class="code-copy">
+                <h2 class="section-title" data-split data-split-scroll>{{ $L['code_title'] }}</h2>
+                <p class="section-lead" data-reveal>{{ $L['code_lead'] }}</p>
+                <ul class="checks">
+                    @foreach($L['code_points'] as $point)
+                        <li data-reveal><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg>{{ $point }}</li>
                     @endforeach
                 </ul>
+                <a class="btn btn-soft" href="{{ $start }}" data-reveal>{{ $L['code_cta'] }} <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
             </div>
-        @endforeach
+
+            <div class="code-window" data-tabs data-reveal data-tilt>
+                <div class="tablist" role="tablist">
+                    @foreach($samples as $key => $sample)
+                        <button type="button" role="tab" id="tab-{{ $key }}" aria-controls="pane-{{ $key }}" aria-selected="{{ $key === $firstTab ? 'true' : 'false' }}" data-tab="{{ $key }}">{{ $L['tabs'][$key] }}</button>
+                    @endforeach
+                    <span class="tab-indicator" data-tab-indicator></span>
+                </div>
+                <div class="window">
+                    @foreach($samples as $key => $sample)
+                        <div class="pane" role="tabpanel" id="pane-{{ $key }}" aria-labelledby="tab-{{ $key }}" @if($key !== $firstTab) hidden @endif>
+                            <div class="window-bar">
+                                <span class="dots"><i></i><i></i><i></i></span>
+                                <span class="file">{{ $sample['file'] }}</span>
+                            </div>
+                            <pre><code class="language-{{ $sample['lang'] }}">{{ $sample['code'] }}</code></pre>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{-- ── Features (bento) ─────────────────────────────────────────────── --}}
+    <section class="section features">
+        <div class="container">
+            <header class="section-head">
+                <h2 class="section-title" data-split data-split-scroll>{{ $L['features_title'] }}</h2>
+                <p class="section-lead" data-reveal>{{ $L['features_lead'] }}</p>
+            </header>
+
+            <div class="bento">
+                @php($f = $L['features'])
+
+                <a class="tile tile-wide" href="{{ $docs . $f['lifecycle']['link'] }}" data-reveal>
+                    <div class="tile-visual pipeline" aria-hidden="true">
+                        @foreach(['Request', 'Middleware', 'Router', 'Controller', 'Response'] as $i => $node)
+                            <span class="node" style="--i: {{ $i }}">{{ $node }}</span>
+                            @if($i < 4)<span class="wire"><i></i></span>@endif
+                        @endforeach
+                    </div>
+                    <h3>{{ $f['lifecycle']['title'] }}</h3>
+                    <p>{{ $f['lifecycle']['text'] }}</p>
+                </a>
+
+                <a class="tile" href="{{ $docs . $f['templates']['link'] }}" data-reveal>
+                    <div class="tile-visual editor" aria-hidden="true">
+                        <div class="ed-line"><b>1</b><span class="k">@@foreach</span>($posts <span class="k">as</span> $post)</div>
+                        <div class="ed-line"><b>2</b>&nbsp;&nbsp;&lt;h2&gt;<span class="e">{&#8203;{ $post-&gt;title }&#8203;}</span>&lt;/h2&gt;</div>
+                        <div class="ed-line squiggle"><b>3</b><span class="k">@@endif</span></div>
+                        <div class="ed-error">Unexpected @@endif: @@foreach opened on line 1 is still open</div>
+                    </div>
+                    <h3>{{ $f['templates']['title'] }}</h3>
+                    <p>{{ $f['templates']['text'] }}</p>
+                </a>
+
+                <a class="tile" href="{{ $docs . $f['scaffold']['link'] }}" data-reveal>
+                    <div class="tile-visual terminal" aria-hidden="true" data-typer>
+                        <div class="t-line t-cmd">$ luany make:feature Post</div>
+                        <div class="t-line"><i>✓</i> app/Models/Post.php</div>
+                        <div class="t-line"><i>✓</i> app/Controllers/PostController.php</div>
+                        <div class="t-line"><i>✓</i> database/migrations/…_posts_table.php</div>
+                        <div class="t-line"><i>✓</i> views/pages/posts/ (4 views)</div>
+                        <div class="t-line"><i>✓</i> routes/posts.php</div>
+                    </div>
+                    <h3>{{ $f['scaffold']['title'] }}</h3>
+                    <p>{{ $f['scaffold']['text'] }}</p>
+                </a>
+
+                <a class="tile tile-wide" href="{{ $docs . $f['orm']['link'] }}" data-reveal>
+                    <div class="tile-visual relations" aria-hidden="true">
+                        <span class="table t-users"><b>users</b><small>id · name · email</small></span>
+                        <span class="table t-posts"><b>posts</b><small>id · user_id · title</small></span>
+                        <span class="table t-comments"><b>comments</b><small>id · post_id · body</small></span>
+                        <span class="rel r1">hasMany</span>
+                        <span class="rel r2">hasMany</span>
+                        <svg viewBox="0 0 600 170" preserveAspectRatio="none"><path d="M150 45 C230 45 230 90 300 90"/><path d="M420 90 C480 90 470 130 520 130"/></svg>
+                    </div>
+                    <h3>{{ $f['orm']['title'] }}</h3>
+                    <p>{{ $f['orm']['text'] }}</p>
+                </a>
+
+                <a class="tile" href="{{ $docs . $f['standards']['link'] }}" data-reveal>
+                    <div class="tile-visual psr" aria-hidden="true">
+                        @foreach(['PSR-7', 'PSR-11', 'PSR-15', 'PSR-17'] as $psr)
+                            <span>{{ $psr }}</span>
+                        @endforeach
+                    </div>
+                    <h3>{{ $f['standards']['title'] }}</h3>
+                    <p>{{ $f['standards']['text'] }}</p>
+                </a>
+
+                <a class="tile tile-wide" href="{{ $docs . $f['security']['link'] }}" data-reveal>
+                    <div class="tile-visual shield" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 4.4 3.4 8.3 8 9 4.6-.7 8-4.6 8-9V6l-8-3Z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg>
+                        <span>@@csrf</span><span>e()</span><span>is_uploaded_file</span>
+                    </div>
+                    <h3>{{ $f['security']['title'] }}</h3>
+                    <p>{{ $f['security']['text'] }}</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    {{-- ── From zero to production ──────────────────────────────────────── --}}
+    <section class="section steps-section">
+        <div class="container">
+            <header class="section-head">
+                <h2 class="section-title" data-split data-split-scroll>{{ $L['steps_title'] }}</h2>
+            </header>
+            <ol class="steps" data-process>
+                <span class="steps-line" aria-hidden="true"><span data-process-line></span></span>
+                @foreach($L['steps'] as $i => $step)
+                    <li class="step" data-process-step>
+                        <span class="step-num">{{ $i + 1 }}</span>
+                        <h3>{{ $step['title'] }}</h3>
+                        <code>{{ $step['cmd'] }}</code>
+                        <p>{{ $step['text'] }}</p>
+                        <a href="{{ $docs . $step['link'] }}">{{ $t['ui']['docs'] }} →</a>
+                    </li>
+                @endforeach
+            </ol>
+        </div>
+    </section>
+
+    {{-- ── Ecosystem ────────────────────────────────────────────────────── --}}
+    <section class="section ecosystem">
+        <div class="container">
+            <header class="section-head">
+                <h2 class="section-title" data-split data-split-scroll>{{ $L['eco_title'] }}</h2>
+                <p class="section-lead" data-reveal>{{ $L['eco_lead'] }}</p>
+            </header>
+            <div class="eco-grid">
+                @foreach($packages as $package)
+                    <article class="eco-card" data-reveal>
+                        <div class="eco-top">
+                            <img src="{{ asset('brand/luany-mark-64.webp') }}" alt="" width="36" height="36" loading="lazy">
+                            <span class="eco-version">v{{ $package['version'] }}</span>
+                        </div>
+                        <h3>{{ $package['name'] }}</h3>
+                        <p>{{ $package['desc'][$locale] ?? $package['desc']['en'] }}</p>
+                        <div class="eco-links">
+                            <a href="{{ $docs . $package['docs'] }}">{{ $L['eco_docs'] }}</a>
+                            <a href="{{ $github }}/{{ $package['repo'] }}" target="_blank" rel="noopener">GitHub ↗</a>
+                        </div>
+                    </article>
+                @endforeach
+            </div>
+        </div>
+    </section>
+
+    {{-- ── Final CTA ────────────────────────────────────────────────────── --}}
+    <section class="final-cta">
+        <div class="container final-inner">
+            <img class="final-mark" src="{{ asset('brand/luany-mark-256.webp') }}" alt="" width="120" height="120" loading="lazy" data-reveal>
+            <h2 class="final-title" data-split data-split-scroll>{{ $L['final_title'] }}</h2>
+            <p data-reveal>{{ $L['final_lead'] }}</p>
+            <div class="hero-actions center" data-reveal>
+                <a class="btn btn-primary" href="{{ $start }}">{{ $L['cta'] }} <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+                <a class="btn btn-ghost on-dark" href="{{ $github }}" target="_blank" rel="noopener">{{ $L['cta_alt'] }}</a>
+            </div>
+        </div>
     </section>
 </main>
+@endsection
+
+@section('scripts')
+    <script src="{{ asset('vendor/gsap/gsap.min.js') }}" defer></script>
+    <script src="{{ asset('vendor/gsap/ScrollTrigger.min.js') }}" defer></script>
+    <script src="{{ asset('vendor/gsap/SplitText.min.js') }}" defer></script>
 @endsection

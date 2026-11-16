@@ -1,13 +1,16 @@
 @extends('layouts.main')
 
-@section('title', 'Page not found')
+@php($e = \App\Docs\Copy::for()['errors'])
+@section('page', 'error')
+@section('title', $e['404_title'] . ' — Luany')
 
 @section('body')
-<main class="landing">
-<section class="error-page">
-    <h1>404</h1>
-    <p>The page you are looking for does not exist.</p>
-    <a href="{{ url('/') }}">Back to home</a>
-</section>
+<main id="main" class="error-page">
+    <div class="error-glow" aria-hidden="true"></div>
+    <img src="{{ asset('brand/luany-mark-256.webp') }}" alt="" width="120" height="120">
+    <p class="error-code">404</p>
+    <h1>{{ $e['404_title'] }}</h1>
+    <p>{{ $e['404_text'] }}</p>
+    <a class="btn btn-primary" href="/{{ \App\Docs\Copy::localeFromUri() }}">{{ $e['home'] }}</a>
 </main>
 @endsection

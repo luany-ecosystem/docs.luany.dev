@@ -1,49 +1,120 @@
+@php($locale = $locale ?? \App\Docs\Copy::localeFromUri())
+@php($t = $t ?? \App\Docs\Copy::for($locale))
+@php($github = config('docs.github'))
+@php($v = fn (string $file) => asset($file) . '?v=' . (@filemtime(base_path('public/assets/' . $file)) ?: '1'))
 <!DOCTYPE html>
-<html lang="{{ $locale ?? 'en' }}">
+<html lang="{{ $locale }}" data-page="@yield('page', 'docs')">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Luany') — Luany</title>
-    <meta name="description" content="@yield('description', 'Luany — a PHP framework with an explicit request lifecycle, a compiled template engine and a productive CLI.')">
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="(prefers-color-scheme: light)" id="hl-light">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="(prefers-color-scheme: dark)" id="hl-dark">
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-    <script>(function(){try{var t=localStorage.getItem('luany-docs-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}}());</script>
+    <title>@yield('title', 'Luany')</title>
+    <meta name="description" content="@yield('description', $t['landing']['meta_description'])">
+    <meta name="theme-color" content="#010213">
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Luany">
+    <meta property="og:title" content="@yield('title', 'Luany')">
+    <meta property="og:description" content="@yield('description', $t['landing']['meta_description'])">
+    <meta property="og:image" content="{{ url('assets/brand/og.png') }}">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <link rel="icon" href="/favicon.ico" sizes="48x48">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('brand/favicon-32.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('brand/apple-touch-icon.png') }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Montserrat:wght@800;900&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css" id="hl-light">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" id="hl-dark" media="not all">
+    <link rel="stylesheet" href="{{ $v('css/app.css') }}">
+    <script>
+        (function () {
+            var t = null;
+            try { t = localStorage.getItem('luany-docs-theme'); } catch (e) {}
+            if (t !== 'light' && t !== 'dark') {
+                t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+            document.documentElement.dataset.theme = t;
+            if (document.documentElement.dataset.page === 'landing' && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.documentElement.classList.add('motion');
+            }
+        }());
+    </script>
     @styles
 </head>
 <body>
-    <header class="topbar">
-        <button class="icon-btn menu-btn" type="button" aria-label="Menu" data-toggle-sidebar>&#9776;</button>
-        <a class="brand" href="/{{ $locale ?? 'en' }}"><img src="/favicon.svg" alt="" width="26" height="26"> Luany</a>
-        @isset($version)<span class="version">v{{ $version }}</span>@endisset
+    <a class="skip-link" href="#main">{{ $t['ui']['skip'] }}</a>
 
-        <button class="search-btn" type="button" data-open-search>
-            <span>{{ ($locale ?? 'en') === 'pt' ? 'Pesquisar' : 'Search' }}</span><kbd>/</kbd>
-        </button>
-
-        <nav class="top-links">
-            @isset($locales)
-                @foreach($locales as $code => $label)
-                    <a href="{{ isset($page) ? '/' . $code . '/docs/' . $page['slug'] : '/' . $code }}" @class(['active' => $code === $locale]) hreflang="{{ $code }}">{{ strtoupper($code) }}</a>
-                @endforeach
+    <header class="topbar" data-topbar>
+        <div class="topbar-inner">
+            @isset($page)
+                <button class="icon-btn menu-btn" type="button" aria-label="{{ $t['ui']['menu'] }}" data-toggle-sidebar>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+                </button>
             @endisset
-            <a href="{{ config('docs.github') }}" target="_blank" rel="noopener">GitHub</a>
-            <button class="icon-btn" type="button" aria-label="Toggle theme" data-toggle-theme>&#9681;</button>
-        </nav>
+
+            <a class="brand" href="/{{ $locale }}" aria-label="Luany">
+                <img src="{{ asset('brand/luany-mark-64.webp') }}" alt="" width="34" height="34">
+                <span class="wordmark">LUANY</span>
+            </a>
+            @isset($version)<span class="version-chip">v{{ $version }}</span>@endisset
+
+            <nav class="main-nav" aria-label="Main">
+                @foreach($t['nav'] as $item)
+                    <a href="/{{ $locale }}/docs/{{ $item['slug'] }}" @class(['active' => isset($page) && $page['slug'] === $item['slug']])>{{ $item['label'] }}</a>
+                @endforeach
+            </nav>
+
+            <div class="topbar-actions">
+                <button class="search-trigger" type="button" data-open-search aria-label="{{ $t['ui']['search'] }}">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                    <span>{{ $t['ui']['search'] }}</span>
+                    <kbd data-shortcut>Ctrl K</kbd>
+                </button>
+
+                @isset($locales)
+                    <div class="locale-switch" role="group" aria-label="{{ $t['ui']['language'] }}">
+                        @foreach($locales as $code => $label)
+                            <a href="{{ isset($page) ? '/' . $code . '/docs/' . $page['slug'] : '/' . $code }}" @class(['active' => $code === $locale]) hreflang="{{ $code }}" title="{{ $label }}">{{ strtoupper($code) }}</a>
+                        @endforeach
+                    </div>
+                @endisset
+
+                <button class="icon-btn theme-toggle" type="button" data-toggle-theme
+                        data-label-light="{{ $t['ui']['theme_light'] }}" data-label-dark="{{ $t['ui']['theme_dark'] }}" aria-label="{{ $t['ui']['theme_dark'] }}">
+                    <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11Z"/></svg>
+                    <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+                </button>
+
+                <a class="icon-btn" href="{{ $github }}" target="_blank" rel="noopener" aria-label="GitHub">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" class="filled"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>
+                </a>
+            </div>
+        </div>
     </header>
 
     @yield('body')
 
-    <div class="search-modal" hidden data-search-modal data-locale="{{ $locale ?? 'en' }}">
-        <div class="search-panel" role="dialog" aria-label="Search">
-            <input type="search" placeholder="{{ ($locale ?? 'en') === 'pt' ? 'Pesquisar na documentação…' : 'Search the docs…' }}" data-search-input autocomplete="off">
+    @include('partials.footer')
+
+    <div class="search-modal" hidden data-search-modal data-locale="{{ $locale }}" data-empty="{{ $t['ui']['search_empty'] }}">
+        <div class="search-backdrop" data-close-search></div>
+        <div class="search-panel" role="dialog" aria-modal="true" aria-label="{{ $t['ui']['search'] }}">
+            <div class="search-field">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                <input type="search" placeholder="{{ $t['ui']['search_placeholder'] }}" data-search-input autocomplete="off" spellcheck="false">
+                <kbd>Esc</kbd>
+            </div>
             <ul class="search-results" data-search-results></ul>
+            <p class="search-foot"><kbd>↑</kbd><kbd>↓</kbd> {{ $t['ui']['search_hint'] }} · <kbd>↵</kbd></p>
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
-    <script src="{{ asset('js/app.js') }}" defer></script>
+    @yield('scripts')
+    <script src="{{ $v('js/app.js') }}" defer data-copy="{{ $t['ui']['copy'] }}" data-copied="{{ $t['ui']['copied'] }}"></script>
     @scripts
 </body>
 </html>
