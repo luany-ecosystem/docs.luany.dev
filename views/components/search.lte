@@ -1,0 +1,12 @@
+<div class="search-modal" hidden data-search-modal data-locale="{{ $locale }}" data-empty="{{ $t['ui']['search_empty'] }}">
+    <div class="search-backdrop" data-close-search></div>
+    <div class="search-panel" role="dialog" aria-modal="true" aria-label="{{ $t['ui']['search'] }}">
+        <div class="search-field">
+            {!! icon('search', 20, 2) !!}
+            <input type="search" placeholder="{{ $t['ui']['search_placeholder'] }}" data-search-input autocomplete="off" spellcheck="false">
+            <kbd>Esc</kbd>
+        </div>
+        <ul class="search-results" data-search-results></ul>
+        <p class="search-foot"><kbd>↑</kbd><kbd>↓</kbd> {{ $t['ui']['search_hint'] }} · <kbd>↵</kbd></p>
+    </div>
+</div>

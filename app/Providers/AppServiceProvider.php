@@ -22,6 +22,6 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(Application $app): void
     {
-        //
+        require_once $app->basePath('app/Support/helpers.php');
     }
 }

@@ -4,7 +4,6 @@ namespace App\Controllers;
 
 use App\Docs\Copy;
 use App\Docs\Documentation;
-use App\Docs\Samples;
 use Luany\Core\Http\Request;
 use Luany\Core\Http\Response;
 
@@ -27,8 +26,6 @@ class DocsController extends Controller
         return view('pages.landing', $this->shared($locale) + [
             'first'    => $this->docs->pages($locale)[0] ?? null,
             'packages' => (array) config('docs.packages', []),
-            'samples'  => Samples::tabs(),
-            'hero'     => Samples::hero(),
         ]);
     }
 

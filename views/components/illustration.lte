@@ -1,0 +1,123 @@
+{{-- Pillar illustrations. Usage: @include('components.illustration', ['name' => 'http|views|data']) — animated in illustrations.js --}}
+@style
+.illo { display: block; width: 100%; height: auto; overflow: visible; }
+.illo text { font-family: var(--font-mono); font-size: 11px; fill: var(--color-text); }
+.illo .t-sm { font-size: 9.5px; }
+.illo .t-head { font-family: var(--font-display); font-weight: 700; font-size: 11.5px; fill: var(--color-heading); }
+.illo .t-faint { fill: var(--color-text-faint); }
+.illo .t-white { fill: #fff; }
+.illo .t-accent { fill: var(--color-accent); }
+.illo .surface { fill: var(--color-surface); stroke: var(--color-border-strong); stroke-width: 1; }
+.illo .panel { fill: var(--color-surface-2); }
+.illo .rail { stroke: var(--color-border-strong); stroke-width: 2; }
+.illo .wire { fill: none; stroke: var(--color-border-strong); stroke-width: 1.5; }
+.illo .wire-accent { fill: none; stroke: url(#illo-grad); stroke-width: 2; }
+.illo .layer-hl { fill: var(--color-accent-soft); stroke: var(--color-accent); opacity: 0; }
+.illo .ok-fill { fill: var(--green); }
+.illo .err-fill { fill: var(--red); }
+.illo .err-soft { fill: rgba(229, 72, 77, .1); stroke: rgba(229, 72, 77, .55); }
+.illo .ok-soft { fill: rgba(22, 163, 106, .1); stroke: rgba(22, 163, 106, .5); }
+.illo .ink { fill: var(--brand-ink); }
+.illo .shadow { filter: drop-shadow(0 10px 18px rgba(20, 12, 30, .12)); }
+[data-theme="dark"] .illo .shadow { filter: drop-shadow(0 10px 18px rgba(0, 0, 0, .45)); }
+/* Reduced motion: show each scene's final, successful state */
+.reduced-motion .illo .res, .reduced-motion .illo .ok-tip, .reduced-motion .illo .rel-label,
+.reduced-motion .illo .query, .reduced-motion .illo .qcount, .reduced-motion .illo .ci-ok,
+.reduced-motion .illo .ci-done, .reduced-motion .illo .prob-ok { opacity: 1 !important; }
+.reduced-motion .illo .ci-spin, .reduced-motion .illo .squiggle, .reduced-motion .illo .prob-badge { opacity: 0; }
+@endstyle
+
+@if($name === 'http')
+<svg class="illo" data-illo="http" viewBox="0 0 360 230" aria-hidden="true" focusable="false">
+    <defs>
+        <linearGradient id="illo-grad" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8E52B8"/><stop offset=".5" stop-color="#E4613E"/><stop offset="1" stop-color="#FD962F"/></linearGradient>
+    </defs>
+    {{-- request --}}
+    <g class="req shadow">
+        <rect x="18" y="14" width="128" height="30" rx="15" class="surface"/>
+        <rect x="26" y="21" width="34" height="16" rx="8" fill="#8E52B8"/>
+        <text x="43" y="32" text-anchor="middle" class="t-sm t-white" style="font-weight:700">GET</text>
+        <text x="68" y="33">/posts/7</text>
+    </g>
+    {{-- rail --}}
+    <line x1="82" y1="48" x2="82" y2="190" class="rail"/>
+    @foreach([['LiveReloadMiddleware', 62], ['CsrfMiddleware', 104], ['PostController::show(int $id)', 146]] as $i => [$label, $y])
+        <g class="layer" data-y="{{ $y }}">
+            <circle cx="82" cy="{{ $y + 15 }}" r="5" class="surface"/>
+            <rect x="104" y="{{ $y }}" width="{{ $i === 2 ? 236 : 186 }}" height="30" rx="9" class="surface shadow"/>
+            <rect x="104" y="{{ $y }}" width="{{ $i === 2 ? 236 : 186 }}" height="30" rx="9" class="layer-hl"/>
+            <text x="118" y="{{ $y + 19 }}" @if($i === 2) class="t-accent" style="font-weight:600" @endif>{{ $label }}</text>
+        </g>
+    @endforeach
+    {{-- packet --}}
+    <circle class="packet" cx="82" cy="48" r="7" fill="url(#illo-grad)"/>
+    {{-- response --}}
+    <g class="res" opacity="0">
+        <rect x="18" y="194" width="150" height="30" rx="15" class="ok-soft"/>
+        <circle cx="36" cy="209" r="8" class="ok-fill"/>
+        <path d="M32 209 l3 3 l6 -6" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="52" y="213" style="font-weight:600">200 OK · 12 ms</text>
+    </g>
+</svg>
+
+@elseif($name === 'views')
+<svg class="illo" data-illo="views" viewBox="0 0 360 230" aria-hidden="true" focusable="false">
+    {{-- edges --}}
+    <path class="edge wire" d="M180 44 C180 62 84 62 84 80"/>
+    <path class="edge wire" d="M180 44 C180 62 248 62 248 80"/>
+    <path class="edge wire" d="M248 108 C248 126 176 126 176 144"/>
+    <path class="edge wire" d="M248 108 C248 126 296 126 296 144"/>
+    {{-- nodes --}}
+    <g class="node shadow"><rect x="128" y="16" width="104" height="28" rx="8" class="surface"/><text x="180" y="34" text-anchor="middle" class="t-head">Template</text></g>
+    <g class="node shadow"><rect x="30" y="80" width="108" height="28" rx="8" class="surface"/><text x="84" y="98" text-anchor="middle">&#64;extends</text></g>
+    <g class="node shadow"><rect x="180" y="80" width="136" height="28" rx="8" class="surface"/><text x="248" y="98" text-anchor="middle">&#64;section('content')</text></g>
+    <g class="node node-loop shadow">
+        <rect x="124" y="144" width="104" height="28" rx="8" class="surface loop-box"/>
+        <rect x="124" y="144" width="104" height="28" rx="8" class="err-soft loop-err" opacity="0"/>
+        <text x="176" y="162" text-anchor="middle">&#64;foreach</text>
+    </g>
+    <g class="node shadow"><rect x="244" y="144" width="104" height="28" rx="8" class="surface"/><text x="296" y="162" text-anchor="middle">&#123;&#123; $post &#125;&#125;</text></g>
+    {{-- error → fix --}}
+    <g class="err-tip" opacity="0">
+        <rect x="40" y="186" width="232" height="30" rx="9" class="err-soft"/>
+        <circle cx="58" cy="201" r="7" class="err-fill"/>
+        <path d="M55 198 l6 6 M61 198 l-6 6" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/>
+        <text x="72" y="205" class="t-sm" style="fill: var(--red)">Unclosed &#64;foreach (line 12)</text>
+    </g>
+    <g class="ok-tip" opacity="0">
+        <rect x="40" y="186" width="232" height="30" rx="9" class="ok-soft"/>
+        <circle cx="58" cy="201" r="7" class="ok-fill"/>
+        <path d="M54 201 l3 3 l6 -6" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="72" y="205" class="t-sm" style="fill: var(--green)">Compiled · 0 problems</text>
+    </g>
+</svg>
+
+@elseif($name === 'data')
+<svg class="illo" data-illo="data" viewBox="0 0 360 230" aria-hidden="true" focusable="false">
+    <defs>
+        <linearGradient id="illo-grad-d" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8E52B8"/><stop offset="1" stop-color="#FD962F"/></linearGradient>
+    </defs>
+    <path class="rel" d="M98 64 C130 64 120 112 146 112" fill="none" stroke="url(#illo-grad-d)" stroke-width="2"/>
+    <path class="rel" d="M226 112 C256 112 240 64 268 64" fill="none" stroke="url(#illo-grad-d)" stroke-width="2"/>
+    @foreach([['users', 12, 20, ['id', 'name', 'email']], ['posts', 146, 68, ['id', 'user_id', 'title']], ['comments', 262, 20, ['id', 'post_id', 'body']]] as [$name2, $x, $y, $cols])
+        <g class="tbl shadow">
+            <rect x="{{ $x }}" y="{{ $y }}" width="{{ $name2 === 'comments' ? 90 : 86 }}" height="96" rx="10" class="surface"/>
+            <rect x="{{ $x }}" y="{{ $y }}" width="{{ $name2 === 'comments' ? 90 : 86 }}" height="24" rx="10" class="panel"/>
+            <text x="{{ $x + 10 }}" y="{{ $y + 16 }}" class="t-head">{{ $name2 }}</text>
+            @foreach($cols as $k => $col)
+                <text x="{{ $x + 10 }}" y="{{ $y + 42 + $k * 18 }}" class="t-sm {{ str_ends_with($col, '_id') ? 't-accent' : 't-faint' }}">{{ $col }}</text>
+            @endforeach
+        </g>
+    @endforeach
+    <g class="rel-label" opacity="0"><rect x="96" y="80" width="52" height="16" rx="8" class="panel"/><text x="122" y="91" text-anchor="middle" class="t-sm">hasMany</text></g>
+    <g class="rel-label" opacity="0"><rect x="218" y="80" width="52" height="16" rx="8" class="panel"/><text x="244" y="91" text-anchor="middle" class="t-sm">hasMany</text></g>
+    <g class="query shadow" opacity="0">
+        <rect x="12" y="182" width="250" height="32" rx="10" class="ink"/>
+        <text x="24" y="202" style="fill:#FDA14A">Post</text><text x="54" y="202" style="fill:#C8C2D8">::with('author')-&gt;paginate(20)</text>
+    </g>
+    <g class="qcount" opacity="0">
+        <rect x="272" y="182" width="78" height="32" rx="10" class="ok-soft"/>
+        <text x="311" y="202" text-anchor="middle" class="t-sm" style="fill: var(--green); font-weight:600">2 queries</text>
+    </g>
+</svg>
+@endif
