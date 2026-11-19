@@ -1,0 +1,343 @@
+@style
+/* ── Shell ────────────────────────────────────────────────────── */
+.nav {
+    position: fixed; inset: 0 0 auto 0; z-index: 100;
+    height: var(--nav-height);
+    color: #fff;
+    transition: background .3s ease, color .3s ease, box-shadow .3s ease, border-color .3s ease;
+    border-bottom: 1px solid transparent;
+}
+.nav.is-scrolled, .nav.menu-open, .nav.nav--solid {
+    background: var(--nav-solid-bg);
+    backdrop-filter: saturate(180%) blur(16px);
+    -webkit-backdrop-filter: saturate(180%) blur(16px);
+    color: var(--color-heading);
+    border-bottom-color: var(--color-border);
+}
+.nav-inner { height: 100%; display: flex; align-items: center; gap: var(--space-8); }
+.nav--solid .nav-inner { max-width: 1480px; }
+
+.nav-brand { display: inline-flex; align-items: center; gap: .6rem; flex-shrink: 0; color: inherit; }
+.nav-brand img { width: 36px; height: 36px; }
+.nav-brand .wordmark { font-family: var(--font-mark); font-weight: 900; font-size: 1.32rem; letter-spacing: .06em; line-height: 1; }
+.nav-version {
+    margin-left: -.9rem; padding: .2rem .5rem; border-radius: var(--radius-full);
+    font-family: var(--font-mono); font-size: .68rem; font-weight: 500;
+    border: 1px solid currentColor; opacity: .55;
+}
+
+.nav-links { display: flex; align-items: center; gap: var(--space-1); list-style: none; }
+.nav-link {
+    display: inline-flex; align-items: center; gap: .3rem;
+    padding: .55rem .85rem;
+    border: 0; background: none;
+    border-radius: var(--radius-full);
+    font-family: var(--font-display);
+    font-size: .95rem; font-weight: 600;
+    color: inherit; opacity: .92;
+    transition: opacity var(--transition), background var(--transition);
+}
+.nav-link:hover, .nav-link[aria-expanded="true"] { opacity: 1; background: rgba(127, 120, 150, .14); }
+.nav-link svg { transition: transform var(--transition); }
+.nav-link[aria-expanded="true"] svg { transform: rotate(180deg); }
+
+.nav-actions { margin-left: auto; display: flex; align-items: center; gap: var(--space-3); }
+.nav .btn-nav { background: #fff; color: var(--brand-ink); }
+.nav.is-scrolled .btn-nav, .nav.menu-open .btn-nav, .nav--solid .btn-nav { background: var(--brand-ember); color: #fff; }
+
+.nav-search {
+    display: inline-flex; align-items: center; gap: .55rem;
+    height: 38px; padding: 0 .45rem 0 .85rem; min-width: 190px;
+    border-radius: var(--radius-full);
+    border: 1px solid rgba(127, 120, 150, .28);
+    background: rgba(127, 120, 150, .1);
+    color: inherit; font-size: .88rem; font-weight: 500;
+    transition: border-color var(--transition), background var(--transition);
+}
+.nav-search span { opacity: .75; }
+.nav-search kbd { margin-left: auto; background: transparent; color: inherit; opacity: .7; border-color: rgba(127, 120, 150, .35); }
+.nav-search:hover { border-color: rgba(127, 120, 150, .5); }
+
+/* ── Appearance + language ───────────────────────────────────── */
+.seg {
+    display: inline-flex; padding: 3px; gap: 2px;
+    border-radius: var(--radius-full);
+    background: rgba(127, 120, 150, .16);
+}
+.seg button, .seg a {
+    display: grid; place-items: center;
+    min-width: 30px; height: 30px; padding: 0 .55rem;
+    border: 0; background: transparent; color: inherit;
+    border-radius: var(--radius-full);
+    font-size: .75rem; font-weight: 700; opacity: .7;
+    transition: background var(--transition), opacity var(--transition), color var(--transition);
+}
+.seg button:hover, .seg a:hover { opacity: 1; }
+.seg [aria-pressed="true"], .seg .is-active { background: #fff; color: var(--brand-ink); opacity: 1; box-shadow: var(--shadow-sm); }
+[data-theme="dark"] .nav.is-scrolled .seg [aria-pressed="true"],
+[data-theme="dark"] .nav.is-scrolled .seg .is-active,
+[data-theme="dark"] .nav--solid .seg [aria-pressed="true"],
+[data-theme="dark"] .nav--solid .seg .is-active { background: var(--color-surface-2); color: #fff; }
+
+/* ── Mega menu panels ────────────────────────────────────────── */
+.mega {
+    position: absolute; left: 50%; top: calc(var(--nav-height) - 6px);
+    width: min(1120px, calc(100vw - 2 * var(--gutter)));
+    transform: translate(-50%, 8px);
+    background: var(--color-surface);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    border-radius: 18px;
+    box-shadow: var(--shadow-lg);
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: opacity .2s ease, transform .25s var(--ease), visibility .2s;
+    overflow: hidden;
+}
+.mega.is-open { opacity: 1; visibility: visible; pointer-events: auto; transform: translate(-50%, 0); }
+.mega-grid { display: grid; grid-template-columns: repeat(var(--cols, 3), 1fr); }
+.mega-col { padding: var(--space-8); border-right: 1px solid var(--color-border); }
+.mega-col:last-child { border-right: 0; }
+.mega-col--soft { background: var(--color-bg-soft); }
+.mega-title {
+    font-family: var(--font-display); font-size: .8rem; font-weight: 700;
+    letter-spacing: .06em; text-transform: uppercase;
+    color: var(--color-text-faint); margin-bottom: var(--space-4);
+}
+.mega-list { list-style: none; display: grid; gap: var(--space-1); }
+.mega-item {
+    display: flex; gap: var(--space-3); align-items: flex-start;
+    padding: .6rem; margin-inline: -.6rem;
+    border-radius: 12px;
+    transition: background var(--transition);
+}
+.mega-item:hover { background: var(--color-bg-soft); }
+.mega-col--soft .mega-item:hover { background: var(--color-surface); }
+.mega-item .icon-badge { width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0; }
+.mega-item strong { display: block; font-family: var(--font-display); font-size: .95rem; color: var(--color-heading); }
+.mega-item span:not(.icon-badge) { display: block; font-size: .85rem; color: var(--color-text-muted); line-height: 1.4; }
+.mega-item--plain { padding-block: .4rem; }
+.mega-item--plain strong { font-weight: 600; font-family: var(--font-body); font-size: .92rem; color: var(--color-text); }
+.mega-item--plain:hover strong { color: var(--color-accent); }
+.mega-foot { margin-top: var(--space-5); }
+
+.nav-backdrop {
+    position: fixed; inset: 0; z-index: 90;
+    background: rgba(5, 6, 26, .28);
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    opacity: 0; visibility: hidden; transition: opacity .25s ease, visibility .25s;
+}
+.nav-backdrop.is-open { opacity: 1; visibility: visible; }
+
+/* ── Mobile ──────────────────────────────────────────────────── */
+.nav-toggle, .nav-search-sm {
+    display: none;
+    width: 44px; height: 44px; place-items: center;
+    border: 0; border-radius: 12px; background: rgba(127, 120, 150, .16); color: inherit;
+}
+.nav-toggle .i-close { display: none; }
+.nav.drawer-open .nav-toggle .i-open { display: none; }
+.nav.drawer-open .nav-toggle .i-close { display: block; }
+.drawer { display: none; }
+
+@media (max-width: 1180px) { .nav-search { min-width: 0; } .nav-search span, .nav-search kbd { display: none; } }
+@media (max-width: 1080px) {
+    .nav-links, .nav-actions, .mega, .nav-backdrop { display: none; }
+    .nav-toggle, .nav-search-sm { display: grid; }
+    .nav-search-sm { margin-left: auto; }
+    .nav-inner { gap: var(--space-3); }
+    .nav.drawer-open { background: var(--color-surface); color: var(--color-heading); border-bottom-color: var(--color-border); }
+    .drawer {
+        display: block;
+        position: fixed; inset: var(--nav-height) 0 0 0;
+        background: var(--color-surface); color: var(--color-text);
+        overflow-y: auto;
+        padding: var(--space-4) var(--gutter) var(--space-12);
+        transform: translateY(-12px); opacity: 0; visibility: hidden;
+        transition: transform .3s var(--ease), opacity .25s ease, visibility .25s;
+    }
+    .nav.drawer-open .drawer { transform: none; opacity: 1; visibility: visible; }
+    .drawer details { border-bottom: 1px solid var(--color-border); }
+    .drawer summary, .drawer > a {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 1.05rem 0;
+        font-family: var(--font-display); font-size: 1.15rem; font-weight: 700;
+        color: var(--color-heading); list-style: none; cursor: pointer;
+    }
+    .drawer > a { border-bottom: 1px solid var(--color-border); }
+    .drawer summary::-webkit-details-marker { display: none; }
+    .drawer details[open] summary svg { transform: rotate(180deg); }
+    .drawer-list { list-style: none; display: grid; gap: var(--space-1); padding-bottom: var(--space-4); }
+    .drawer-list a { display: flex; gap: var(--space-3); align-items: center; padding: .55rem 0; color: var(--color-text-muted); font-weight: 500; }
+    .drawer-list .icon-badge { width: 34px; height: 34px; border-radius: 9px; }
+    .drawer-foot { display: grid; gap: var(--space-5); margin-top: var(--space-8); }
+    .drawer-foot .row { display: flex; justify-content: space-between; align-items: center; color: var(--color-text-muted); font-size: var(--text-sm); }
+    .drawer .seg { background: var(--color-surface-2); }
+    .drawer .seg [aria-pressed="true"], .drawer .seg .is-active { background: var(--brand-ember); color: #fff; }
+}
+@endstyle
+
+@php($packages = config('docs.packages', []))
+@php($sections = $navigation ?? [])
+@php($switchTo = fn (string $code) => isset($page) ? '/' . $code . '/docs/' . $page['slug'] : '/' . $code)
+
+<header class="nav{{ ($solid ?? false) ? ' nav--solid' : '' }}" id="navbar">
+    <nav class="container nav-inner" aria-label="Main">
+        <a href="/{{ $locale }}" class="nav-brand" aria-label="Luany">
+            <img src="{{ asset('brand/luany-mark-64.webp') }}" alt="" width="36" height="36">
+            <span class="wordmark">LUANY</span>
+        </a>
+        @isset($version)<span class="nav-version">v{{ $version }}</span>@endisset
+
+        <ul class="nav-links">
+            @if($sections !== [])
+                <li>
+                    <button type="button" class="nav-link" data-menu-trigger aria-expanded="false" aria-controls="megaDocs">
+                        {{ $t['nav']['docs'] }} {!! icon('chevron', 16, 2.2) !!}
+                    </button>
+                </li>
+            @endif
+            <li>
+                <button type="button" class="nav-link" data-menu-trigger aria-expanded="false" aria-controls="megaEco">
+                    {{ $t['nav']['ecosystem'] }} {!! icon('chevron', 16, 2.2) !!}
+                </button>
+            </li>
+            <li><a class="nav-link" href="{{ $github }}" target="_blank" rel="noopener">{{ $t['nav']['github'] }}</a></li>
+        </ul>
+
+        <div class="nav-actions">
+            <button type="button" class="nav-search" data-open-search>
+                {!! icon('search', 16, 2) !!}<span>{{ $t['ui']['search'] }}</span><kbd data-shortcut>Ctrl K</kbd>
+            </button>
+            <div class="seg" role="group" aria-label="{{ $t['ui']['theme'] }}">
+                <button type="button" data-theme-set="system" aria-pressed="false" title="{{ $t['ui']['theme_system'] }}">{!! icon('monitor', 15, 1.8) !!}<span class="sr-only">{{ $t['ui']['theme_system'] }}</span></button>
+                <button type="button" data-theme-set="light" aria-pressed="false" title="{{ $t['ui']['theme_light'] }}">{!! icon('sun', 15, 1.8) !!}<span class="sr-only">{{ $t['ui']['theme_light'] }}</span></button>
+                <button type="button" data-theme-set="dark" aria-pressed="false" title="{{ $t['ui']['theme_dark'] }}">{!! icon('moon', 15, 1.8) !!}<span class="sr-only">{{ $t['ui']['theme_dark'] }}</span></button>
+            </div>
+            @isset($locales)
+                <div class="seg" role="group" aria-label="{{ $t['ui']['language'] }}">
+                    @foreach($locales as $code => $label)
+                        <a href="{{ $switchTo($code) }}" class="{{ $code === $locale ? 'is-active' : '' }}" hreflang="{{ $code }}" lang="{{ $code }}" title="{{ $label }}">{{ strtoupper($code) }}</a>
+                    @endforeach
+                </div>
+            @endisset
+            <a href="/{{ $locale }}/docs/installation" class="btn btn-nav">
+                {{ $t['ui']['get_started'] }} {!! icon('chevron-right', 16, 2.4, 'arrow') !!}
+            </a>
+        </div>
+
+        <button type="button" class="nav-search-sm" data-open-search aria-label="{{ $t['ui']['search'] }}">{!! icon('search', 20, 2) !!}</button>
+        <button type="button" class="nav-toggle" id="navToggle" aria-controls="navDrawer" aria-expanded="false" aria-label="{{ $t['ui']['menu'] }}">
+            <span class="i-open">{!! icon('menu', 22, 1.8) !!}</span>
+            <span class="i-close">{!! icon('close', 22, 1.8) !!}</span>
+        </button>
+
+        {{-- ── Mega: Documentation ── --}}
+        @if($sections !== [])
+            <div class="mega" id="megaDocs" style="--cols: 5">
+                <div class="mega-grid">
+                    @foreach(array_slice($sections, 0, 4) as $section)
+                        <div class="mega-col">
+                            <p class="mega-title">{{ $section['title'] }}</p>
+                            <ul class="mega-list">
+                                @foreach(array_slice($section['pages'], 0, 6) as $item)
+                                    <li><a class="mega-item mega-item--plain" href="/{{ $locale }}/docs/{{ $item['slug'] }}"><strong>{{ $item['title'] }}</strong></a></li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endforeach
+                    <div class="mega-col mega-col--soft">
+                        @foreach(array_slice($sections, 4) as $section)
+                            <p class="mega-title">{{ $section['title'] }}</p>
+                            <ul class="mega-list" style="margin-bottom: var(--space-6)">
+                                @foreach(array_slice($section['pages'], 0, 4) as $item)
+                                    <li><a class="mega-item mega-item--plain" href="/{{ $locale }}/docs/{{ $item['slug'] }}"><strong>{{ $item['title'] }}</strong></a></li>
+                                @endforeach
+                            </ul>
+                        @endforeach
+                        <div class="mega-foot"><a class="text-link" href="/{{ $locale }}/docs">{{ $t['ui']['all_docs'] }} {!! icon('arrow', 16, 2) !!}</a></div>
+                    </div>
+                </div>
+            </div>
+        @endif
+
+        {{-- ── Mega: Ecosystem ── --}}
+        <div class="mega" id="megaEco">
+            <div class="mega-grid" style="grid-template-columns: 2fr 1fr">
+                <div class="mega-col">
+                    <p class="mega-title">{{ $t['nav']['ecosystem'] }}</p>
+                    <ul class="mega-list" style="grid-template-columns: 1fr 1fr; column-gap: var(--space-6)">
+                        @foreach($packages as $p)
+                            <li><a class="mega-item" href="/{{ $locale }}/docs/{{ $p['docs'] }}">
+                                <span class="icon-badge">{!! icon($p['icon'], 18, 1.8) !!}</span>
+                                <span><strong>{{ $p['name'] }} <small style="font: 500 .72rem var(--font-mono); color: var(--color-accent)">{{ $p['version'] }}</small></strong><span>{{ $p['desc'][$locale] ?? $p['desc']['en'] }}</span></span>
+                            </a></li>
+                        @endforeach
+                    </ul>
+                </div>
+                <div class="mega-col mega-col--soft">
+                    <p class="mega-title">{{ $t['nav']['open_source'] }}</p>
+                    <ul class="mega-list">
+                        <li><a class="mega-item" href="{{ $github }}" target="_blank" rel="noopener">
+                            <span class="icon-badge">{!! icon('github', 18, 1.8) !!}</span>
+                            <span><strong>GitHub</strong><span>{{ $t['nav']['github_desc'] }}</span></span>
+                        </a></li>
+                        <li><a class="mega-item" href="https://packagist.org/packages/luany/" target="_blank" rel="noopener">
+                            <span class="icon-badge">{!! icon('package', 18, 1.8) !!}</span>
+                            <span><strong>{{ $t['nav']['packagist'] }}</strong><span>{{ $t['nav']['packagist_desc'] }}</span></span>
+                        </a></li>
+                        <li><a class="mega-item" href="https://marketplace.visualstudio.com/items?itemName=luany.luany-lte" target="_blank" rel="noopener">
+                            <span class="icon-badge">{!! icon('code', 18, 1.8) !!}</span>
+                            <span><strong>{{ $t['nav']['marketplace'] }}</strong><span>{{ $t['nav']['marketplace_desc'] }}</span></span>
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    {{-- ── Mobile drawer ── --}}
+    <div class="drawer" id="navDrawer">
+        @foreach($sections as $section)
+            <details>
+                <summary>{{ $section['title'] }} {!! icon('chevron', 18, 1.8) !!}</summary>
+                <ul class="drawer-list">
+                    @foreach($section['pages'] as $item)
+                        <li><a href="/{{ $locale }}/docs/{{ $item['slug'] }}">{{ $item['title'] }}</a></li>
+                    @endforeach
+                </ul>
+            </details>
+        @endforeach
+        <details>
+            <summary>{{ $t['nav']['ecosystem'] }} {!! icon('chevron', 18, 1.8) !!}</summary>
+            <ul class="drawer-list">
+                @foreach($packages as $p)
+                    <li><a href="/{{ $locale }}/docs/{{ $p['docs'] }}"><span class="icon-badge">{!! icon($p['icon'], 16, 1.8) !!}</span>{{ $p['name'] }}</a></li>
+                @endforeach
+            </ul>
+        </details>
+        <a href="{{ $github }}" target="_blank" rel="noopener">GitHub {!! icon('external', 18, 1.8) !!}</a>
+
+        <div class="drawer-foot">
+            <div class="row">
+                <span>{{ $t['ui']['theme'] }}</span>
+                <div class="seg" role="group" aria-label="{{ $t['ui']['theme'] }}">
+                    <button type="button" data-theme-set="system" aria-pressed="false">{!! icon('monitor', 15, 1.8) !!}<span class="sr-only">{{ $t['ui']['theme_system'] }}</span></button>
+                    <button type="button" data-theme-set="light" aria-pressed="false">{!! icon('sun', 15, 1.8) !!}<span class="sr-only">{{ $t['ui']['theme_light'] }}</span></button>
+                    <button type="button" data-theme-set="dark" aria-pressed="false">{!! icon('moon', 15, 1.8) !!}<span class="sr-only">{{ $t['ui']['theme_dark'] }}</span></button>
+                </div>
+            </div>
+            @isset($locales)
+                <div class="row">
+                    <span>{{ $t['ui']['language'] }}</span>
+                    <div class="seg">
+                        @foreach($locales as $code => $label)
+                            <a href="{{ $switchTo($code) }}" class="{{ $code === $locale ? 'is-active' : '' }}">{{ strtoupper($code) }}</a>
+                        @endforeach
+                    </div>
+                </div>
+            @endisset
+            <a href="/{{ $locale }}/docs/installation" class="btn btn-primary btn-lg btn-block">{{ $t['ui']['get_started'] }}</a>
+        </div>
+    </div>
+</header>
+<div class="nav-backdrop" id="navBackdrop"></div>

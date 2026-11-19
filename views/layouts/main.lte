@@ -1,49 +1,83 @@
+@php($locale = $locale ?? \App\Docs\Copy::localeFromUri())
+@php($t = $t ?? \App\Docs\Copy::for($locale))
+@php($github = config('docs.github'))
+@php($isLanding = isset($packages))
+@php($titles = [])
+@isset($navigation)
+    @php($titles = array_column(array_merge(...array_column($navigation, 'pages')), 'title', 'slug'))
+@endisset
 <!DOCTYPE html>
-<html lang="{{ $locale ?? 'en' }}">
+<html lang="{{ $locale === 'pt' ? 'pt-AO' : 'en' }}" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Luany') — Luany</title>
-    <meta name="description" content="@yield('description', 'Luany — a PHP framework with an explicit request lifecycle, a compiled template engine and a productive CLI.')">
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="(prefers-color-scheme: light)" id="hl-light">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="(prefers-color-scheme: dark)" id="hl-dark">
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-    <script>(function(){try{var t=localStorage.getItem('luany-docs-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}}());</script>
+    <title>@yield('title', 'Luany')</title>
+    <meta name="description" content="@yield('description', $t['landing']['meta_description'])">
+    <meta name="theme-color" content="#05061A">
+
+    {{-- Appearance: resolve the theme before first paint (no flash). Pref: system | light | dark --}}
+    <script>
+        (function () {
+            var d = document.documentElement, p = 'system';
+            d.classList.add('js');
+            try { p = localStorage.getItem('luany-theme') || 'system'; } catch (e) {}
+            var dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            d.setAttribute('data-theme', p === 'system' ? (dark ? 'dark' : 'light') : p);
+            d.setAttribute('data-theme-pref', p);
+            if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) d.classList.add('reduced-motion');
+        }());
+    </script>
+
+    {{-- Open Graph --}}
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Luany">
+    <meta property="og:title" content="@yield('title', 'Luany')">
+    <meta property="og:description" content="@yield('description', $t['landing']['meta_description'])">
+    <meta property="og:image" content="{{ url('assets/brand/og.png') }}">
+    <meta property="og:locale" content="{{ $locale === 'pt' ? 'pt_PT' : 'en_US' }}">
+    <meta name="twitter:card" content="summary_large_image">
+
+    {{-- Icons --}}
+    <link rel="icon" href="/favicon.ico" sizes="48x48">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('brand/favicon-32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('brand/favicon-16.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('brand/apple-touch-icon.png') }}">
+
+    {{-- Fonts --}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Montserrat:wght@900&display=swap">
+
+    {{-- Code highlighting (follows the appearance) --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css" id="hl-light">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" id="hl-dark" media="not all">
+
+    <link rel="stylesheet" href="{{ asset_v('css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset_v('css/docs.css') }}">
     @styles
 </head>
 <body>
-    <header class="topbar">
-        <button class="icon-btn menu-btn" type="button" aria-label="Menu" data-toggle-sidebar>&#9776;</button>
-        <a class="brand" href="/{{ $locale ?? 'en' }}"><img src="/favicon.svg" alt="" width="26" height="26"> Luany</a>
-        @isset($version)<span class="version">v{{ $version }}</span>@endisset
+    <a class="skip-link" href="#main">{{ $t['ui']['skip'] }}</a>
 
-        <button class="search-btn" type="button" data-open-search>
-            <span>{{ ($locale ?? 'en') === 'pt' ? 'Pesquisar' : 'Search' }}</span><kbd>/</kbd>
-        </button>
-
-        <nav class="top-links">
-            @isset($locales)
-                @foreach($locales as $code => $label)
-                    <a href="{{ isset($page) ? '/' . $code . '/docs/' . $page['slug'] : '/' . $code }}" @class(['active' => $code === $locale]) hreflang="{{ $code }}">{{ strtoupper($code) }}</a>
-                @endforeach
-            @endisset
-            <a href="{{ config('docs.github') }}" target="_blank" rel="noopener">GitHub</a>
-            <button class="icon-btn" type="button" aria-label="Toggle theme" data-toggle-theme>&#9681;</button>
-        </nav>
-    </header>
+    @include('components.navbar', ['solid' => !$isLanding])
 
     @yield('body')
 
-    <div class="search-modal" hidden data-search-modal data-locale="{{ $locale ?? 'en' }}">
-        <div class="search-panel" role="dialog" aria-label="Search">
-            <input type="search" placeholder="{{ ($locale ?? 'en') === 'pt' ? 'Pesquisar na documentação…' : 'Search the docs…' }}" data-search-input autocomplete="off">
-            <ul class="search-results" data-search-results></ul>
-        </div>
-    </div>
+    @include('components.footer')
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
-    <script src="{{ asset('js/app.js') }}" defer></script>
+    @include('components.search')
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    {{-- GSAP 3.13 (self-hosted — public/assets/vendor/gsap) --}}
+    @if($isLanding)
+        <script src="{{ asset('vendor/gsap/gsap.min.js') }}"></script>
+        <script src="{{ asset('vendor/gsap/ScrollTrigger.min.js') }}"></script>
+        <script src="{{ asset('vendor/gsap/SplitText.min.js') }}"></script>
+        <script src="{{ asset('vendor/gsap/DrawSVGPlugin.min.js') }}"></script>
+        <script src="{{ asset_v('js/wave.js') }}"></script>
+        <script src="{{ asset_v('js/illustrations.js') }}"></script>
+    @endif
+    <script src="{{ asset_v('js/app.js') }}" data-copy="{{ $t['ui']['copy'] }}" data-copied="{{ $t['ui']['copied'] }}"></script>
     @scripts
 </body>
 </html>

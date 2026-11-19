@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Docs\Copy;
 use App\Docs\Documentation;
 use Luany\Core\Http\Request;
 use Luany\Core\Http\Response;
@@ -22,7 +23,10 @@ class DocsController extends Controller
             abort(404);
         }
 
-        return view('pages.landing', $this->shared($locale) + ['first' => $this->docs->pages($locale)[0] ?? null]);
+        return view('pages.landing', $this->shared($locale) + [
+            'first'    => $this->docs->pages($locale)[0] ?? null,
+            'packages' => (array) config('docs.packages', []),
+        ]);
     }
 
     public function index(string $locale): Response
@@ -67,6 +71,7 @@ class DocsController extends Controller
             'locales'    => $this->docs->locales(),
             'version'    => $this->docs->version(),
             'navigation' => $this->docs->navigation($locale),
+            't'          => Copy::for($locale),
         ];
     }
 

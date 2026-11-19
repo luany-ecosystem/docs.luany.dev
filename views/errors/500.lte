@@ -1,13 +1,16 @@
 @extends('layouts.main')
 
-@section('title', 'Server error')
+@php($e = \App\Docs\Copy::for()['errors'])
+@section('page', 'error')
+@section('title', $e['500_title'] . ' — Luany')
 
 @section('body')
-<main class="landing">
-<section class="error-page">
-    <h1>500</h1>
-    <p>Something went wrong on our side. Please try again later.</p>
-    <a href="{{ url('/') }}">Back to home</a>
-</section>
+<main id="main" class="error-page">
+    <div class="error-glow" aria-hidden="true"></div>
+    <img src="{{ asset('brand/luany-mark-256.webp') }}" alt="" width="120" height="120">
+    <p class="error-code">500</p>
+    <h1>{{ $e['500_title'] }}</h1>
+    <p>{{ $e['500_text'] }}</p>
+    <a class="btn btn-primary" href="/{{ \App\Docs\Copy::localeFromUri() }}">{{ $e['home'] }}</a>
 </main>
 @endsection

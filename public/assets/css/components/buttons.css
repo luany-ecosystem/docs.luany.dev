@@ -1,0 +1,44 @@
+/* ================================================================
+   Luany — Buttons
+   ================================================================ */
+
+.btn {
+    position: relative;
+    display: inline-flex; align-items: center; justify-content: center; gap: .45rem;
+    min-height: 44px;
+    padding: .65rem 1.25rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius-full);
+    font-family: var(--font-display);
+    font-size: .95rem;
+    font-weight: 700;
+    letter-spacing: -.005em;
+    line-height: 1.1;
+    white-space: nowrap;
+    transition: background var(--transition), color var(--transition), border-color var(--transition),
+                box-shadow var(--transition), transform var(--transition);
+}
+.btn:active { transform: scale(.98); }
+.btn svg { transition: transform var(--transition); }
+.btn:hover svg.arrow { transform: translateX(3px); }
+
+.btn-primary { background: var(--brand-ember); color: #fff; }
+.btn-primary:hover { background: var(--brand-ember-dk); box-shadow: 0 10px 24px -8px rgba(221, 84, 32, .6); }
+
+.btn-secondary {
+    background: var(--color-surface); color: var(--color-heading);
+    border-color: var(--color-border-strong);
+}
+.btn-secondary:hover { border-color: var(--color-heading); }
+
+.btn-ghost { background: var(--color-accent-soft); color: var(--color-accent); }
+.btn-ghost:hover { filter: brightness(1.05); }
+
+/* For dark surfaces */
+.btn-light { background: #fff; color: var(--brand-ink); }
+.btn-light:hover { background: #FFF1E6; box-shadow: 0 10px 30px -10px rgba(253, 150, 47, .6); }
+.btn-outline-light { background: rgba(255,255,255,.04); color: #fff; border-color: rgba(255,255,255,.28); }
+.btn-outline-light:hover { border-color: #fff; background: rgba(255,255,255,.1); }
+
+.btn-lg { min-height: 52px; padding: .85rem 1.6rem; font-size: 1.02rem; }
+.btn-block { width: 100%; }
