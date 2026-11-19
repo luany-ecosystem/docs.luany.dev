@@ -6,6 +6,7 @@
     <testsuites>
         <testsuite name="Feature">
             <directory>tests/Feature</directory>
+            <directory>tests/Unit</directory>
         </testsuite>
     </testsuites>
     <php>
@@ -13,5 +14,6 @@
         <env name="APP_DEBUG" value="false"/>
         <env name="APP_URL" value="http://localhost"/>
         <env name="DOCS_PATH" value="tests/fixtures/docs"/>
+        <env name="DOCS_LIVE_VERSIONS" value="false"/>
     </php>
 </phpunit>

@@ -333,7 +333,7 @@
                     @php($x = $L['tools'][$tool])
                     <article class="card prod-card{{ $tool === 'cli' ? ' prod-card--wide' : '' }}" data-reveal>
                         <div class="prod-text">
-                            <span class="chip">{!! icon($tool === 'cli' ? 'terminal' : ($tool === 'vscode' ? 'code' : 'check'), 14, 2) !!} {{ $x['chip'] }}</span>
+                            <span class="chip">{!! icon($tool === 'cli' ? 'terminal' : ($tool === 'vscode' ? 'code' : 'check'), 14, 2) !!} {{ $x['chip'] }}@if($tool !== 'ci') {{ collect_version($packages, $tool === 'cli' ? 'luany/cli' : 'LTE for VS Code') }}@endif</span>
                             <h3>{{ $x['title'] }}</h3>
                             <p>{{ $x['text'] }}</p>
                             <a class="text-link" href="{{ $docs . $x['slug'] }}">{{ $x['link'] }} {!! icon('arrow', 16, 2) !!}</a>

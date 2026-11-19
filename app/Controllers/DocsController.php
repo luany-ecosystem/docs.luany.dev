@@ -25,7 +25,7 @@ class DocsController extends Controller
 
         return view('pages.landing', $this->shared($locale) + [
             'first'    => $this->docs->pages($locale)[0] ?? null,
-            'packages' => (array) config('docs.packages', []),
+            'packages' => ecosystem(),
         ]);
     }
 
