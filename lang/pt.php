@@ -70,8 +70,8 @@ return [
         'tools_title'   => 'Ferramentas que trabalham por ti.',
         'tools_lead'    => 'Do primeiro comando ao CI: gerar, verificar e corrigir sem sair do teu fluxo.',
         'tools' => [
-            'cli'    => ['chip' => 'luany/cli 1.6', 'title' => 'Luany CLI', 'text' => 'Cria projetos, gera features completas, corre migrations e o servidor com live reload.', 'slug' => 'cli', 'link' => 'Comandos da CLI'],
-            'vscode' => ['chip' => 'Extensão 1.2', 'title' => 'LTE para VS Code', 'text' => 'Realce, snippets, o ícone Luany nos ficheiros .lte e erros diretamente no editor.', 'slug' => 'vscode', 'link' => 'Instalar a extensão'],
+            'cli'    => ['chip' => 'luany/cli', 'title' => 'Luany CLI', 'text' => 'Cria projetos, gera features completas, corre migrations e o servidor com live reload.', 'slug' => 'cli', 'link' => 'Comandos da CLI'],
+            'vscode' => ['chip' => 'Extensão', 'title' => 'LTE para VS Code', 'text' => 'Realce, snippets, o ícone Luany nos ficheiros .lte e erros diretamente no editor.', 'slug' => 'vscode', 'link' => 'Instalar a extensão'],
             'ci'     => ['chip' => 'GitHub Actions', 'title' => 'Vistas verificadas no CI', 'text' => 'O luany view:check compila todas as vistas e anota cada erro na linha certa do pull request.', 'slug' => 'view-check', 'link' => 'Configurar o view:check'],
         ],
 

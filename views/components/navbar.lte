@@ -176,7 +176,7 @@
 }
 @endstyle
 
-@php($packages = config('docs.packages', []))
+@php($packages = ecosystem())
 @php($sections = $navigation ?? [])
 @php($switchTo = fn (string $code) => isset($page) ? '/' . $code . '/docs/' . $page['slug'] : '/' . $code)
 

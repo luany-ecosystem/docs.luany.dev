@@ -48,7 +48,7 @@
             <div>
                 <h3>{{ $t['footer']['ecosystem'] }}</h3>
                 <ul>
-                    @foreach(config('docs.packages', []) as $p)
+                    @foreach(ecosystem() as $p)
                         <li><a href="{{ $github }}/{{ $p['repo'] }}" target="_blank" rel="noopener">{{ $p['name'] }}</a></li>
                     @endforeach
                 </ul>

@@ -70,8 +70,8 @@ return [
         'tools_title'   => 'Tools that do the work for you.',
         'tools_lead'    => 'From the first command to CI: scaffold, check and fix without leaving your flow.',
         'tools' => [
-            'cli'    => ['chip' => 'luany/cli 1.6', 'title' => 'Luany CLI', 'text' => 'Creates projects, scaffolds complete features, runs migrations and the dev server with live reload.', 'slug' => 'cli', 'link' => 'CLI commands'],
-            'vscode' => ['chip' => 'Extension 1.2', 'title' => 'LTE for VS Code', 'text' => 'Highlighting, snippets, the Luany icon on .lte files and errors right in the editor.', 'slug' => 'vscode', 'link' => 'Install the extension'],
+            'cli'    => ['chip' => 'luany/cli', 'title' => 'Luany CLI', 'text' => 'Creates projects, scaffolds complete features, runs migrations and the dev server with live reload.', 'slug' => 'cli', 'link' => 'CLI commands'],
+            'vscode' => ['chip' => 'Extension', 'title' => 'LTE for VS Code', 'text' => 'Highlighting, snippets, the Luany icon on .lte files and errors right in the editor.', 'slug' => 'vscode', 'link' => 'Install the extension'],
             'ci'     => ['chip' => 'GitHub Actions', 'title' => 'Views checked in CI', 'text' => 'luany view:check compiles every view and annotates each error on the right line of the pull request.', 'slug' => 'view-check', 'link' => 'Set up view:check'],
         ],
 

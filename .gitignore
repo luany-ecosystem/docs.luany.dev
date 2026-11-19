@@ -9,6 +9,7 @@ composer.lock
 # Cache & logs
 /storage/cache/views/*
 /storage/cache/docs/
+/storage/cache/versions.json
 /storage/sessions/
 /storage/logs/*
 !/storage/cache/views/.gitkeep
