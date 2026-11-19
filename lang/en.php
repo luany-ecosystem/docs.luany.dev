@@ -42,12 +42,6 @@ return [
         'meta_title'       => 'Luany — the PHP framework with nothing to hide',
         'meta_description' => 'Luany is a PHP framework with an explicit request lifecycle, templates checked before they run, a complete ORM and a CLI that scaffolds whole features.',
 
-        'ticker' => [
-            ['tag' => 'Luany 1.4', 'text' => 'Numeric route parameters, JSON errors and route caching', 'slug' => 'routing'],
-            ['tag' => 'LTE 1.3',   'text' => 'Slots as HtmlString and @script(module)',                  'slug' => 'lte-layouts'],
-            ['tag' => 'VS Code',   'text' => 'The Luany file icon and errors right in the editor',       'slug' => 'vscode'],
-        ],
-
         'title'     => 'The PHP framework with nothing',
         'accent'    => 'to hide.',
         'lead'      => 'An explicit request lifecycle, templates checked before they run, a complete ORM and a CLI that scaffolds whole features.',

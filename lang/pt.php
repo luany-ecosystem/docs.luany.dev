@@ -42,12 +42,6 @@ return [
         'meta_title'       => 'Luany — o framework PHP sem caixas negras',
         'meta_description' => 'O Luany é um framework PHP com ciclo de vida explícito, templates verificados antes de executar, um ORM completo e uma CLI que gera features inteiras.',
 
-        'ticker' => [
-            ['tag' => 'Luany 1.4', 'text' => 'Parâmetros numéricos, erros JSON e cache de rotas', 'slug' => 'routing'],
-            ['tag' => 'LTE 1.3',   'text' => 'Slots como HtmlString e @script(module)',            'slug' => 'lte-layouts'],
-            ['tag' => 'VS Code',   'text' => 'Ícone Luany e erros diretamente no editor',          'slug' => 'vscode'],
-        ],
-
         'title'     => 'O framework PHP sem caixas',
         'accent'    => 'negras.',
         'lead'      => 'Ciclo de vida explícito, templates verificados antes de executar, um ORM completo e uma CLI que gera features inteiras.',

@@ -9,18 +9,6 @@
 @style
 /* ── Hero ─────────────────────────────────────────────────────── */
 .hero { padding-top: var(--nav-height); min-height: min(100vh, 980px); display: flex; flex-direction: column; }
-.hero-ticker {
-    position: relative; z-index: 2;
-    border-bottom: 1px solid rgba(255,255,255,.08);
-    background: rgba(255,255,255,.03);
-    backdrop-filter: blur(4px);
-}
-.hero-ticker ul { list-style: none; display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-6); padding-block: var(--space-4); }
-.hero-ticker a { display: flex; gap: var(--space-3); align-items: flex-start; font-size: .92rem; font-weight: 600; color: #fff; line-height: 1.35; }
-.hero-ticker a em { font-style: normal; color: var(--brand-orange); flex-shrink: 0; }
-.hero-ticker a svg { flex-shrink: 0; margin-top: 2px; opacity: .7; transition: transform var(--transition), opacity var(--transition); }
-.hero-ticker a:hover svg { transform: translateX(4px); opacity: 1; }
-
 .hero-body {
     position: relative; z-index: 2; flex: 1;
     display: grid; grid-template-columns: 1fr 1.05fr; gap: var(--space-12); align-items: center;
@@ -215,8 +203,6 @@
     .process-track, .process-line { display: none; }
 }
 @media (max-width: 760px) {
-    .hero-ticker ul { grid-template-columns: 1fr; gap: var(--space-2); }
-    .hero-ticker li:nth-child(n+2) { display: none; }
     .stage { height: 430px; }
     .mk-editor { width: 100%; }
     .mk-body { grid-template-columns: 1fr; }
@@ -234,14 +220,6 @@
     {{-- ═══ Hero ═══ --}}
     <section class="hero dark-surface">
         <canvas class="wave-canvas" data-wave="hero" aria-hidden="true"></canvas>
-
-        <div class="hero-ticker">
-            <ul class="container">
-                @foreach($L['ticker'] as $item)
-                    <li><a href="{{ $docs . $item['slug'] }}" data-hero-fade><em>{{ $item['tag'] }}</em><span>{{ $item['text'] }}</span>{!! icon('arrow', 16, 2) !!}</a></li>
-                @endforeach
-            </ul>
-        </div>
 
         <div class="container hero-body">
             <div>
